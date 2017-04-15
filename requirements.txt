@@ -1,2 +1,4 @@
 Adafruit_LSM303
 influxdb
+pykalman
+scipy

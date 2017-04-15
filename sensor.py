@@ -8,6 +8,7 @@ from struct import unpack
 import subprocess
 import Adafruit_LSM303
 from influxdb import InfluxDBClient
+from pykalman import KalmanFilter
 
 # Maximum readings
 # x (-2048, 2047) y (-2048, 2047) z (-1740, 1780)
@@ -15,7 +16,7 @@ from influxdb import InfluxDBClient
 class SleepDebugger(object):
 
     WINDOW_SIZE = 25
-    MAG_THRESHOLD = .75
+    MAG_THRESHOLD = 4.0
     INFLUX_HOST = "10.1.1.2"
     INFLUX_PORT = 8086
     address = 0x1d
@@ -29,6 +30,9 @@ class SleepDebugger(object):
         self.filename = filename
 
         self.mag_threshold2 = pow(self.MAG_THRESHOLD, 2)
+        self.kf = KalmanFilter(initial_state_mean=0, n_dim_obs=1)
+        self.point = None
+        self.covariance = [ [0.0], [0.0], [0.0] ]
 
     def _read_data_point(self):
         accel, mag = self.lsm303.read()
@@ -53,30 +57,23 @@ class SleepDebugger(object):
         ]
         self.influx.write_points(json_body)
 
-    def _handle_sum(self):
+    def _handle_point(self, raw_point):
 
-        sum = [0.0, 0.0, 0.0]
-        for pt in self.points:
-            sum[0] += pt[0]
-            sum[1] += pt[1]
-            sum[2] += pt[2]
+        if not self.point:
+            self.point = raw_point
 
-        sum[0] /= len(self.points)
-        sum[1] /= len(self.points)
-        sum[2] /= len(self.points)
+        (self.point[0], self.covariance[0]) = self.kf.filter_update(self.point[0], self.covariance[0], raw_point[0])
+        (self.point[1], self.covariance[1]) = self.kf.filter_update(self.point[1], self.covariance[1], raw_point[1])
+        (self.point[2], self.covariance[2]) = self.kf.filter_update(self.point[2], self.covariance[2], raw_point[2])
 
-        mag2 = pow(sum[0], 2) + pow(sum[1], 2) + pow(sum[2], 2)
+        point = [self.point[0][0].data[0], self.point[1][0].data[0], self.point[2][0].data[0]]
+
+        diff = ( abs(self.last_point[0] - point[0]), abs(self.last_point[1] - point[1]),  abs(self.last_point[2] - point[2]) )
+#        print "pt: ", point, " diff: ", diff
+
+        mag2 = pow(diff[0], 2) + pow(diff[1], 2) + pow(diff[2], 2)
         if mag2 > self.mag_threshold2:
             self._notify(sqrt(mag2))
-
-        self.points = []
-
-    def _handle_point(self, point):
-        diff = ( abs(self.last_point[0] - point[0]), abs(self.last_point[1] - point[1]),  abs(self.last_point[2] - point[2]) )
-        # print "pt: ", point, " diff: ", diff
-        self.points.append(diff)
-        if len(self.points) >= self.WINDOW_SIZE:
-            self._handle_sum()
 
         self.last_point = point
 
@@ -85,7 +82,7 @@ class SleepDebugger(object):
         # but the steady state, we can't keep up with a 160Hz sample rate. 
         # shouldn't be a problem.
         while True:
-            pt = self._read_data_point()
+            pt = list(self._read_data_point())
             if not self.last_point:
                 self.last_point = pt
                 continue
