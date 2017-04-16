@@ -74,14 +74,13 @@ class SleepDebugger(object):
         point = [self.point[0][0].data[0], self.point[1][0].data[0], self.point[2][0].data[0]]
 
         diff = ( abs(self.last_point[0] - point[0]), abs(self.last_point[1] - point[1]),  abs(self.last_point[2] - point[2]) )
-#        print "pt: ", point, " diff: ", diff
 
         mag2 = pow(diff[0], 2) + pow(diff[1], 2) + pow(diff[2], 2)
         s = sqrt(mag2)
         if s > 2:
             print sqrt(mag2)
         if mag2 > self.mag_threshold2:
-            self._notify(sqrt(mag2))
+            self._notify(sqrt(mag2) - self.mag_threshold2)
 
         self.last_point = point
 
