@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 import sys
+from atexit import register
 from math import sqrt, pow
 import json
 from time import sleep
@@ -9,14 +10,17 @@ import subprocess
 import Adafruit_LSM303
 from influxdb import InfluxDBClient
 from pykalman import KalmanFilter
+from sensor_lock import SensorLock
 
 # Maximum readings
 # x (-2048, 2047) y (-2048, 2047) z (-1740, 1780)
 
+LOCK_FILE = "/var/lock/sleep-debugger-accelerometer.lock"
+
 class SleepDebugger(object):
 
     WINDOW_SIZE = 25
-    MAG_THRESHOLD = 4.5
+    MAG_THRESHOLD = 4.0 
     INFLUX_HOST = "10.1.1.2"
     INFLUX_PORT = 8086
     address = 0x1d
@@ -24,6 +28,7 @@ class SleepDebugger(object):
 
         self.lsm303 = Adafruit_LSM303.LSM303(busnum=1, accel_address=0x1d, mag_address=0x6b)
         self.influx = InfluxDBClient(self.INFLUX_HOST, self.INFLUX_PORT, "root", "root", "sleep")
+        self.lock = SensorLock(LOCK_FILE)
 
         self.last_point = None
         self.points = []
@@ -72,15 +77,20 @@ class SleepDebugger(object):
 #        print "pt: ", point, " diff: ", diff
 
         mag2 = pow(diff[0], 2) + pow(diff[1], 2) + pow(diff[2], 2)
+        s = sqrt(mag2)
+        if s > 2:
+            print sqrt(mag2)
         if mag2 > self.mag_threshold2:
             self._notify(sqrt(mag2))
 
         self.last_point = point
 
     def run(self):
-        # There used to be an overrun check, but it turns out that in anything
-        # but the steady state, we can't keep up with a 160Hz sample rate. 
-        # shouldn't be a problem.
+        if not self.lock.allowed_to_start():
+            sys.exit(-1)
+
+        self.lock.create()
+
         while True:
             pt = list(self._read_data_point())
             if not self.last_point:
@@ -90,12 +100,14 @@ class SleepDebugger(object):
             self._handle_point(pt)
             sleep(.005)
 
+
 if __name__ == "__main__":
 
     wav = None
     if len(sys.argv) == 2:
         wav = sys.argv[1]
 
+    print "starting sleep debugger accelerometer logger"
     sd = SleepDebugger(wav)
     try:
         sd.run()
