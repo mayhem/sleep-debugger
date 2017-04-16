@@ -16,7 +16,7 @@ from pykalman import KalmanFilter
 class SleepDebugger(object):
 
     WINDOW_SIZE = 25
-    MAG_THRESHOLD = 4.0
+    MAG_THRESHOLD = 4.5
     INFLUX_HOST = "10.1.1.2"
     INFLUX_PORT = 8086
     address = 0x1d
