@@ -1,0 +1,12 @@
+[Unit]
+Description=Mayhem's Sleep Debugging Logger -- temperature humidity sensor data agent
+After=multi-user.target
+
+[Service]
+Type=idle
+ExecStart=/usr/bin/python /home/robert/sleep-debugger/temp-hum-sensor.py
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
