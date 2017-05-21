@@ -80,7 +80,7 @@ class SleepDebugger(object):
         if s > 2:
             print sqrt(mag2)
         if mag2 > self.mag_threshold2:
-            self._notify(sqrt(mag2) - self.mag_threshold2)
+            self._notify(sqrt(mag2) - self.MAG_THRESHOLD)
 
         self.last_point = point
 
