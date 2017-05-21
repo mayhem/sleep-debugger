@@ -4,7 +4,7 @@ After=multi-user.target
 
 [Service]
 Type=idle
-ExecStart=/usr/bin/python /home/robert/sleep-debugger/temp-hum-sensor.py
+ExecStart=/usr/bin/python /home/robert/sleep-debugger/temp-hum-sensors.py
 Restart=always
 RestartSec=3
 
