@@ -1,0 +1,22 @@
+# general configuration
+
+SLEEPER       = "<your name here>"
+
+# influx configuration
+
+INFLUX_HOST   = "localhost"
+INFLUX_PORT   = 8086
+INFLUX_DB     = "sleep"
+INFLUX_USER   = "root"
+INFLUX_PASSWD = "root"
+
+# accelerometer configuration
+
+ACCEL_SENSOR = None             # accelerometer model
+ACCEL_FILTER = True             # filter data via Kalman filter
+ACCEL_SAMPLES_PER_SECOND = 200  # number of samples per second
+ACCEL_MAG_THRESHOLD      = 4.0
+
+# light sensor configuration
+LIGHT_SENSOR = None
+LIGHT_SENSOR_SAMPLE_PERIOD = 10

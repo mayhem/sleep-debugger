@@ -87,3 +87,7 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+sleepdebugger/config.py
+sleep-debugger-data
+*.swp

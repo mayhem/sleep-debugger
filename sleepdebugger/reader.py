@@ -21,7 +21,7 @@ class Reader(object):
         self._load_sensor(type, model)
 
     def _load_sensor(self, type, model):
-        module = "sleepdebugger.%s.%s" % (type, model)
+        module = "sleepdebugger.%ss.%s" % (type, model)
         try:
             mod = __import__(module)
         except as err:
@@ -43,7 +43,7 @@ class Reader(object):
         for k in data:
             json_body['fields'][k] = data[k]
 
-        self.influx.write_points(json_body)
+        #self.influx.write_points(json_body)
 
     @abstractmethod
     def read(self):

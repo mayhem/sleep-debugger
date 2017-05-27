@@ -21,11 +21,14 @@ class AccelerometerReader(Reader):
         if not self.point:
             self.point = raw_point
 
-        (self.point[0], self.covariance[0]) = self.kf.filter_update(self.point[0], self.covariance[0], raw_point[0])
-        (self.point[1], self.covariance[1]) = self.kf.filter_update(self.point[1], self.covariance[1], raw_point[1])
-        (self.point[2], self.covariance[2]) = self.kf.filter_update(self.point[2], self.covariance[2], raw_point[2])
+        if config.ACCEL_FILTER:
+            (self.point[0], self.covariance[0]) = self.kf.filter_update(self.point[0], self.covariance[0], raw_point[0])
+            (self.point[1], self.covariance[1]) = self.kf.filter_update(self.point[1], self.covariance[1], raw_point[1])
+            (self.point[2], self.covariance[2]) = self.kf.filter_update(self.point[2], self.covariance[2], raw_point[2])
 
-        point = [self.point[0][0].data[0], self.point[1][0].data[0], self.point[2][0].data[0]]
+            point = [self.point[0][0].data[0], self.point[1][0].data[0], self.point[2][0].data[0]]
+        else:
+            point = raw_point
 
         diff = ( abs(self.last_point[0] - point[0]), abs(self.last_point[1] - point[1]),  abs(self.last_point[2] - point[2]) )
 
@@ -34,7 +37,7 @@ class AccelerometerReader(Reader):
         if s > 2:
             print sqrt(mag2)
         if mag2 > self.mag_threshold2:
-            self._notify(sqrt(mag2) - self.ACCEL_MAG_THRESHOLD)
+            self._notify(sqrt(mag2) - config.ACCEL_MAG_THRESHOLD)
 
         self.last_point = point
 

@@ -2,7 +2,7 @@ import os
 import sys
 from atexit import register
 
-class SensorLock(object):
+class ProcessLock(object):
 
     def __init__(self, lockfile):
 
