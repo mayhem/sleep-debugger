@@ -9,5 +9,4 @@ class LightSensorReader(Reader):
 
     def read(self):
         pt = int(self.sensor.read())
-        print "light sensor: %d" % pt
         self._save_data("light", { 'light' : pt })

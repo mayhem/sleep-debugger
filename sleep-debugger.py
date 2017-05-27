@@ -42,7 +42,7 @@ class SleepDebugger(object):
 
             if self.temphum and (not self.temphum_time or time() >= self.temphum_time):
                 self.temphum.read()
-                self.temphum_time = time() + config.TEMP_HUM_SAMPLE_PERIOD
+                self.temphum_time = time() + config.TEMP_HUM_SENSOR_SAMPLE_PERIOD
 
             if self.accel and (not self.accel_time or time() >- self.accel_time):
                 self.accel.read()

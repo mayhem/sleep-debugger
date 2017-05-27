@@ -44,7 +44,6 @@ class Reader(object):
         for k in data:
             json_body[0]['fields'][k] = data[k]
 
-        print json_body
         self.influx.write_points(json_body)
 
     @abstractmethod

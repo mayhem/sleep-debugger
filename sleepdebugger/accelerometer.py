@@ -34,8 +34,7 @@ class AccelerometerReader(Reader):
 
         mag2 = pow(diff[0], 2) + pow(diff[1], 2) + pow(diff[2], 2)
         s = sqrt(mag2)
-        if s > 2:
-            print sqrt(mag2)
+#        print mag2, self.mag_threshold2
         if mag2 > self.mag_threshold2:
             self._save_data("sleep", { 'mag' : sqrt(mag2) - config.ACCEL_MAG_THRESHOLD})
 
