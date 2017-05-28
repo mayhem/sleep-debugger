@@ -2,6 +2,13 @@
 
 SLEEPER       = "<your name here>"
 
+DEBUG         = True
+SECRET_KEY    = "add random characters here"
+
+# server configuration
+HOST          = "0.0.0.0"
+PORT          = 8080
+
 # influx configuration
 
 INFLUX_HOST   = "localhost"
@@ -20,3 +27,7 @@ ACCEL_MAG_THRESHOLD      = 4.0
 # light sensor configuration
 LIGHT_SENSOR = None
 LIGHT_SENSOR_SAMPLE_PERIOD = 10
+
+# temperature/humidity sensor configuration
+TEMP_HUM_SENSOR = None
+TEMP_HUM_SENSOR_SAMPLE_PERIOD = 10
