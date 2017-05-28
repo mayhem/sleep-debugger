@@ -2,3 +2,4 @@ Adafruit_LSM303
 influxdb
 pykalman
 scipy
+Flask==0.12

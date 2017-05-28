@@ -1,0 +1,17 @@
+{% extends 'layout' %}
+{% block body %}
+<div class="row">
+        <h1>Record sleep event</h1>
+
+        <p>
+        Enter text, including #hashtags to be recorded right now:
+        </p>
+
+        <form action="/" method="POST" enctype="application/x-www-form-urlencoded"> 
+            <input class="form-control" type="text" name="entry"></input>
+            </p>
+            <input class="form-control btn-primary" type="submit" name="submit" value="record" />
+        </form>
+
+    </div>
+{% endblock %}

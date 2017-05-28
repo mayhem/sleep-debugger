@@ -91,3 +91,5 @@ ENV/
 sleepdebugger/config.py
 sleep-debugger-data
 *.swp
+
+ve
