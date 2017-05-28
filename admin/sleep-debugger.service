@@ -4,7 +4,7 @@ After=multi-user.target
 
 [Service]
 Type=idle
-ExecStart=/usr/bin/python /home/robert/sleep-debugger/accelerometer.py
+ExecStart=/usr/bin/python /home/robert/sleep-debugger/sleep-debugger.py
 Restart=always
 RestartSec=3
 

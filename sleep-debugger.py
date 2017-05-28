@@ -7,6 +7,7 @@ from sleepdebugger.process_lock import ProcessLock
 from sleepdebugger.accelerometer import AccelerometerReader
 from sleepdebugger.light_sensor import LightSensorReader
 from sleepdebugger.temp_hum_sensor import TempHumSensorReader
+from sleepdebugger.reader import CannotReadSensor
 import sleepdebugger.config as config
 
 LOCK_FILE = "/var/lock/sleep-debugger.lock"
@@ -37,16 +38,26 @@ class SleepDebugger(object):
     def run(self):
         while True:
             if self.light and (not self.light_time or time() >= self.light_time):
-                self.light.read()
-                self.light_time = time() + config.LIGHT_SENSOR_SAMPLE_PERIOD
+                try:
+                    self.light.read()
+                    self.light_time = time() + config.LIGHT_SENSOR_SAMPLE_PERIOD
+                except CannotReadSensor as err:
+                    print str(err)
+                    self.light_time += 1
 
             if self.temphum and (not self.temphum_time or time() >= self.temphum_time):
-                self.temphum.read()
-                self.temphum_time = time() + config.TEMP_HUM_SENSOR_SAMPLE_PERIOD
+                try:
+                    self.temphum.read()
+                    self.temphum_time = time() + config.TEMP_HUM_SENSOR_SAMPLE_PERIOD
+                except CannotReadSensor as err:
+                    self.temphum_time += 1
 
             if self.accel and (not self.accel_time or time() >- self.accel_time):
-                self.accel.read()
-                self.accel_time = time() + (1.0 / config.ACCEL_SAMPLES_PER_SECOND)
+                try:
+                    self.accel.read()
+                    self.accel_time = time() + (1.0 / config.ACCEL_SAMPLES_PER_SECOND)
+                except CannotReadSensor as err:
+                    self.accel_time += (1.0 / config.ACCEL_SAMPLES_PER_SECOND)
 
             # Improve this
             sleep(.0005)
@@ -58,7 +69,7 @@ if __name__ == "__main__":
     if len(sys.argv) == 2:
         wav = sys.argv[1]
 
-    print "starting sleep debugger accelerometer logger"
+    print "starting sleep debugger logger"
     sd = SleepDebugger(wav)
     try:
         sd.run()
