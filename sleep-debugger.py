@@ -37,6 +37,7 @@ class SleepDebugger(object):
 
     def run(self):
         while True:
+            sleep_until = sys.maxint
             if self.light and (not self.light_time or time() >= self.light_time):
                 try:
                     self.light.read()
@@ -44,6 +45,8 @@ class SleepDebugger(object):
                 except CannotReadSensor as err:
                     print str(err)
                     self.light_time += 1
+                if sleep_until > self.light_time:
+                    sleep_until = self.light_time
 
             if self.temphum and (not self.temphum_time or time() >= self.temphum_time):
                 try:
@@ -51,6 +54,8 @@ class SleepDebugger(object):
                     self.temphum_time = time() + config.TEMP_HUM_SENSOR_SAMPLE_PERIOD
                 except CannotReadSensor as err:
                     self.temphum_time += 1
+                if sleep_until > self.temphum_time:
+                    sleep_until = self.temphum_time
 
             if self.accel and (not self.accel_time or time() >- self.accel_time):
                 try:
@@ -58,9 +63,10 @@ class SleepDebugger(object):
                     self.accel_time = time() + (1.0 / config.ACCEL_SAMPLES_PER_SECOND)
                 except CannotReadSensor as err:
                     self.accel_time += (1.0 / config.ACCEL_SAMPLES_PER_SECOND)
+                if sleep_until > self.accel_time:
+                    sleep_until = self.accel_time
 
-            # Improve this
-            sleep(.0005)
+            sleep(max(0, sleep_until - time()))
 
 
 if __name__ == "__main__":
