@@ -31,3 +31,7 @@ LIGHT_SENSOR_SAMPLE_PERIOD = 10
 # temperature/humidity sensor configuration
 TEMP_HUM_SENSOR = None
 TEMP_HUM_SENSOR_SAMPLE_PERIOD = 10
+
+# radar sensor configuration
+RADAR_SENSOR = None
+RADAR_SENSOR_SAMPLE_PERIOD = .1

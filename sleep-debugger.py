@@ -35,6 +35,11 @@ class SleepDebugger(object):
             self.temphum = TempHumSensorReader("temp_hum_sensor", config.TEMP_HUM_SENSOR)
             self.temphum_time = 0
 
+        self.radar = None
+        if config.RADAR_SENSOR:
+            self.radar = RadarSensorReader("radar_sensor", config.RADAR_SENSOR)
+            self.radar_time = 0
+
     def run(self):
         while True:
             sleep_until = sys.maxint
@@ -65,6 +70,15 @@ class SleepDebugger(object):
                     self.accel_time += (1.0 / config.ACCEL_SAMPLES_PER_SECOND)
                 if sleep_until > self.accel_time:
                     sleep_until = self.accel_time
+
+            if self.radar and (not self.radar_time or time() >= self.radar_time):
+                try:
+                    self.radar.read()
+                    self.radar_time = time() + config.RADAR_SENSOR_SAMPLE_PERIOD
+                except CannotReadSensor as err:
+                    self.radar_time += 1
+                if sleep_until > self.radar_time:
+                    sleep_until = self.radar_time
 
             sleep(max(0, sleep_until - time()))
 
