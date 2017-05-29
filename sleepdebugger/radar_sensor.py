@@ -6,13 +6,11 @@ class RadarSensorReader(Reader):
     def __init__(self, type, model):
         super(RadarSensorReader, self).__init__(type, model)
 
-        self.value = None
+        self.value = -1
 
     def read(self):
-        pt = int(self.sensor.read())
-        if not self.value:
-            self.value = pt
-
+        pt = self.sensor.read()
+        print pt
         if pt != self.value:
             self._save_data("radar", { 'radar' : pt })
 
