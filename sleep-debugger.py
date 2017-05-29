@@ -7,6 +7,7 @@ from sleepdebugger.process_lock import ProcessLock
 from sleepdebugger.accelerometer import AccelerometerReader
 from sleepdebugger.light_sensor import LightSensorReader
 from sleepdebugger.temp_hum_sensor import TempHumSensorReader
+from sleepdebugger.radar_sensor import RadarSensorReader
 from sleepdebugger.reader import CannotReadSensor
 import sleepdebugger.config as config
 

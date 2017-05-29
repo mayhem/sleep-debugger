@@ -12,11 +12,6 @@ class Sensor(object):
 
     def read(self):
         if gpio.input(self.input_pin) == gpio.HIGH:
-            return 1.0
+            return 1
         else:
-            return 0.0
-
-s = Sensor()
-while True:
-    print s.read()
-    sleep(1)
+            return 0
