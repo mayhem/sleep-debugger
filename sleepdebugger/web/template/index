@@ -10,8 +10,13 @@
         <form action="/" method="POST" enctype="application/x-www-form-urlencoded"> 
             <input class="form-control" type="text" name="entry"></input>
             </p>
-            <input class="form-control btn-primary" type="submit" name="submit" value="record" />
+            <input class="form-control btn btn-primary" type="submit" name="submit" value="record" />
         </form>
+    
+        </p>
+        <p>
+        <a href="/export" class="btn" href="#" role="button">export data</a>
+        </p>
 
     </div>
 {% endblock %}
