@@ -18,9 +18,23 @@ Most of these sensors are ones I already had at home, so I used them. I really r
 sensor since it is very good, albeit expensive. The accelerometers and light sensors matter less, but I recommend digital
 i2c interfaces for whichever break out boards you choose.
 
-* Triple-axis Accelerometer+Magnetometer ( https://www.adafruit.com/product/1120 )
-* Adafruit HTU21D-F Temperature & Humidity Sensor Breakout Board ( https://www.adafruit.com/product/1899 )
-* VCNL4010 Proximity/Light sensor ( https://www.adafruit.com/product/466 )
+* Triple-axis Accelerometer+Magnetometer 
+
+  buy: https://www.adafruit.com/product/1120 
+  lib: https://github.com/adafruit/Adafruit_Python_LSM303
+
+* Adafruit HTU21D-F Temperature & Humidity Sensor Breakout Board 
+
+  buy: https://www.adafruit.com/product/1899 
+  lib: 
+  needs: https://github.com/bbx10/htu21dflib.git
+
+* VCNL4010 Proximity/Light sensor 
+  
+  buy: https://www.adafruit.com/product/466
+  notes: I didn't like this one -- between I2C bus problems and fragility of the sensors, I've stopped using this one. See the TMT6000 
+
+* TMT6000 via attiny "ADC"
 
 
 # Target audience
