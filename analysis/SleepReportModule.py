@@ -21,6 +21,10 @@ class SleepReportAnalysis(object):
         df = df.dropna()
         df['Timestamp'] = df['Timestamp'].astype(np.datetime64)
         return df
+    
+    def DataOverview(self, dataframe):
+        """Function to provide top level overview of data"""
+        return dataframe.describe()
 
     def HighestPeaks(self, dataframe):
         """Fucntion to ID highest peaks in data"""
@@ -37,7 +41,8 @@ class SleepReportAnalysis(object):
         return difference2
 
     def ProduceSleepReport(self, frame1, frame2):
-        """Function to produce the Sleep Report"""
+        """Function to produce the Sleep Report,
+        Frame1 should be CalcDiff Output"""
         frames = [frame1, frame2]
         result = pd.concat(frames, axis=1).dropna().drop('Magnitude', axis=1)
         cols=['Length Between Peak', 'Timestamp of Peak']
