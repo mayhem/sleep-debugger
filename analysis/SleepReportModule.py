@@ -1,7 +1,5 @@
 import pandas as pd
 from pandas import DataFrame
-import bokeh.charts
-import tkFileDialog
 import numpy as np
 
 
