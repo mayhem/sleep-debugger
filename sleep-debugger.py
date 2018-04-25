@@ -20,16 +20,6 @@ class SleepDebugger(object):
             sys.exit(-1)
         self.lock.create()
 
-        self.accel = None
-        if config.ACCEL_SENSOR:
-            self.accel = AccelerometerReader("accelerometer", config.ACCEL_SENSOR)
-            self.accel_time = 0
-
-        self.light = None
-        if config.LIGHT_SENSOR:
-            self.light = LightSensorReader("light_sensor", config.LIGHT_SENSOR)
-            self.light_time = 0
-
         self.temphum = None
         if config.TEMP_HUM_SENSOR:
             self.temphum = TempHumSensorReader("temp_hum_sensor", config.TEMP_HUM_SENSOR)
@@ -38,15 +28,6 @@ class SleepDebugger(object):
     def run(self):
         while True:
             sleep_until = sys.maxint
-            if self.light and (not self.light_time or time() >= self.light_time):
-                try:
-                    self.light.read()
-                    self.light_time = time() + config.LIGHT_SENSOR_SAMPLE_PERIOD
-                except CannotReadSensor as err:
-                    print str(err)
-                    self.light_time += 1
-                if sleep_until > self.light_time:
-                    sleep_until = self.light_time
 
             if self.temphum and (not self.temphum_time or time() >= self.temphum_time):
                 try:
@@ -56,15 +37,6 @@ class SleepDebugger(object):
                     self.temphum_time += 1
                 if sleep_until > self.temphum_time:
                     sleep_until = self.temphum_time
-
-            if self.accel and (not self.accel_time or time() >- self.accel_time):
-                try:
-                    self.accel.read()
-                    self.accel_time = time() + (1.0 / config.ACCEL_SAMPLES_PER_SECOND)
-                except CannotReadSensor as err:
-                    self.accel_time += (1.0 / config.ACCEL_SAMPLES_PER_SECOND)
-                if sleep_until > self.accel_time:
-                    sleep_until = self.accel_time
 
             sleep(max(0, sleep_until - time()))
 
